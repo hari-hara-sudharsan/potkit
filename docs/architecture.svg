@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .box { fill: #f5f5f5; stroke: #333; stroke-width: 2; }
+      .dev { fill: #0ea5e9; stroke: #0369a1; stroke-width: 2; }
+      .cli { fill: #06b6d4; stroke: #0891b2; stroke-width: 2; }
+      .infra { fill: #8b5cf6; stroke: #6d28d9; stroke-width: 2; }
+      .blockchain { fill: #ec4899; stroke: #be185d; stroke-width: 2; }
+      .text { font-family: 'Courier New', monospace; font-size: 14px; fill: #000; font-weight: bold; }
+      .label { font-family: 'Arial', sans-serif; font-size: 12px; fill: #666; }
+      .title { font-family: 'Arial', sans-serif; font-size: 18px; fill: #000; font-weight: bold; }
+      .arrow { stroke: #333; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .text-white { fill: white; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="30" class="title" text-anchor="middle">PotKit Architecture</text>
+
+  <!-- Layer 1: Developer -->
+  <rect x="350" y="60" width="200" height="60" class="dev" rx="5"/>
+  <text x="450" y="95" class="text text-white" text-anchor="middle">Developer</text>
+
+  <!-- Arrow down -->
+  <path d="M 450 120 L 450 160" class="arrow"/>
+
+  <!-- Layer 2: PotKit CLI -->
+  <rect x="200" y="160" width="500" height="120" class="cli" rx="5"/>
+  <text x="450" y="185" class="text text-white" text-anchor="middle">PotKit CLI</text>
+  
+  <text x="250" y="215" class="label" text-anchor="middle">status</text>
+  <text x="350" y="215" class="label" text-anchor="middle">node</text>
+  <text x="450" y="215" class="label" text-anchor="middle">build</text>
+  <text x="550" y="215" class="label" text-anchor="middle">upload</text>
+  <text x="650" y="215" class="label" text-anchor="middle">logs</text>
+  
+  <text x="250" y="240" class="label" text-anchor="middle">dev</text>
+  <text x="350" y="240" class="label" text-anchor="middle">faucet</text>
+  <text x="450" y="240" class="label" text-anchor="middle">deploy</text>
+  <text x="550" y="240" class="label" text-anchor="middle">init</text>
+  <text x="650" y="240" class="label" text-anchor="middle">inspect</text>
+
+  <!-- Arrow down -->
+  <path d="M 450 280 L 450 320" class="arrow"/>
+
+  <!-- Layer 3: Infrastructure -->
+  <g>
+    <!-- Portaldot Node -->
+    <rect x="100" y="320" width="180" height="80" class="infra" rx="5"/>
+    <text x="190" y="345" class="text text-white" text-anchor="middle">Portaldot Node</text>
+    <text x="190" y="370" class="label text-white" text-anchor="middle">RPC Layer</text>
+    <text x="190" y="390" class="label text-white" text-anchor="middle">ws://127.0.0.1:9944</text>
+
+    <!-- Docker -->
+    <rect x="360" y="320" width="180" height="80" class="infra" rx="5"/>
+    <text x="450" y="345" class="text text-white" text-anchor="middle">Docker</text>
+    <text x="450" y="370" class="label text-white" text-anchor="middle">Container</text>
+    <text x="450" y="390" class="label text-white" text-anchor="middle">Management</text>
+
+    <!-- Contract Dev -->
+    <rect x="620" y="320" width="180" height="80" class="infra" rx="5"/>
+    <text x="710" y="345" class="text text-white" text-anchor="middle">ink! Compiler</text>
+    <text x="710" y="370" class="label text-white" text-anchor="middle">Contract</text>
+    <text x="710" y="390" class="label text-white" text-anchor="middle">Tooling</text>
+  </g>
+
+  <!-- Arrows from CLI to Infrastructure -->
+  <path d="M 320 280 L 190 320" class="arrow"/>
+  <path d="M 450 280 L 450 320" class="arrow"/>
+  <path d="M 580 280 L 710 320" class="arrow"/>
+
+  <!-- Arrow down to Blockchain -->
+  <path d="M 450 400 L 450 440" class="arrow"/>
+
+  <!-- Layer 4: Blockchain -->
+  <rect x="150" y="440" width="600" height="140" class="blockchain" rx="5"/>
+  <text x="450" y="465" class="text text-white" text-anchor="middle">Blockchain Infrastructure</text>
+  
+  <text x="280" y="500" class="label text-white">Contracts Pallet</text>
+  <text x="620" y="500" class="label text-white">Balances Pallet</text>
+  
+  <text x="280" y="530" class="label text-white">Wasm Uploads</text>
+  <text x="620" y="530" class="label text-white">Chain Events</text>
+  
+  <text x="280" y="560" class="label text-white">State Management</text>
+  <text x="620" y="560" class="label text-white">Event Streaming</text>
+
+  <!-- Bottom label -->
+  <text x="450" y="650" class="label" text-anchor="middle">Unified Portaldot Developer Ecosystem</text>
+</svg>
