@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .step { fill: #06b6d4; stroke: #0891b2; stroke-width: 2; }
+      .success { fill: #10b981; stroke: #059669; stroke-width: 2; }
+      .text { font-family: 'Courier New', monospace; font-size: 13px; fill: white; font-weight: bold; }
+      .label { font-family: 'Arial', sans-serif; font-size: 11px; fill: #666; }
+      .title { font-family: 'Arial', sans-serif; font-size: 20px; fill: #000; font-weight: bold; }
+      .arrow { stroke: #333; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .dash-arrow { stroke: #999; stroke-width: 2; fill: none; stroke-dasharray: 5,5; marker-end: url(#arrowhead-light); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#333" />
+    </marker>
+    <marker id="arrowhead-light" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#999" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="35" class="title" text-anchor="middle">PotKit Developer Workflow</text>
+
+  <!-- Step 1: Init -->
+  <circle cx="80" cy="100" r="35" class="step"/>
+  <text x="80" y="108" class="text" text-anchor="middle">1</text>
+  <text x="80" y="150" class="label" text-anchor="middle">potkit init</text>
+
+  <!-- Arrow -->
+  <path d="M 115 100 L 165 100" class="arrow"/>
+
+  <!-- Step 2: Status -->
+  <circle cx="200" cy="100" r="35" class="step"/>
+  <text x="200" y="108" class="text" text-anchor="middle">2</text>
+  <text x="200" y="150" class="label" text-anchor="middle">potkit status</text>
+
+  <!-- Arrow -->
+  <path d="M 235 100 L 285 100" class="arrow"/>
+
+  <!-- Step 3: Build -->
+  <circle cx="320" cy="100" r="35" class="step"/>
+  <text x="320" y="108" class="text" text-anchor="middle">3</text>
+  <text x="320" y="150" class="label" text-anchor="middle">potkit build</text>
+
+  <!-- Arrow down -->
+  <path d="M 320 135 L 320 200" class="arrow"/>
+
+  <!-- Step 4: Upload -->
+  <circle cx="320" cy="270" r="35" class="step"/>
+  <text x="320" y="278" class="text" text-anchor="middle">4</text>
+  <text x="320" y="320" class="label" text-anchor="middle">potkit upload</text>
+
+  <!-- Arrow right -->
+  <path d="M 355 270 L 405 270" class="arrow"/>
+
+  <!-- Step 5: Faucet -->
+  <circle cx="440" cy="270" r="35" class="step"/>
+  <text x="440" y="278" class="text" text-anchor="middle">5</text>
+  <text x="440" y="320" class="label" text-anchor="middle">potkit faucet</text>
+
+  <!-- Arrow right -->
+  <path d="M 475 270 L 525 270" class="arrow"/>
+
+  <!-- Step 6: Logs -->
+  <circle cx="560" cy="270" r="35" class="step"/>
+  <text x="560" y="278" class="text" text-anchor="middle">6</text>
+  <text x="560" y="320" class="label" text-anchor="middle">potkit logs</text>
+
+  <!-- Arrow down -->
+  <path d="M 560 305 L 560 370" class="arrow"/>
+
+  <!-- Step 7: Dev -->
+  <circle cx="560" cy="440" r="35" class="success"/>
+  <text x="560" y="448" class="text" text-anchor="middle">7</text>
+  <text x="560" y="490" class="label" text-anchor="middle">potkit dev</text>
+
+  <!-- Environment boxes -->
+  <g>
+    <!-- Setup Phase -->
+    <rect x="20" y="400" width="240" height="150" fill="none" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5" rx="5"/>
+    <text x="140" y="420" class="label" text-anchor="middle" font-weight="bold">Setup Phase</text>
+    <text x="30" y="445" class="label">• Project initialization</text>
+    <text x="30" y="465" class="label">• Environment checks</text>
+    <text x="30" y="485" class="label">• Configuration</text>
+    <text x="30" y="505" class="label">• System diagnostics</text>
+    <text x="30" y="525" class="label">• RPC connectivity</text>
+  </g>
+
+  <g>
+    <!-- Development Phase -->
+    <rect x="350" y="400" width="240" height="150" fill="none" stroke="#ccc" stroke-width="2" stroke-dasharray="5,5" rx="5"/>
+    <text x="470" y="420" class="label" text-anchor="middle" font-weight="bold">Development Phase</text>
+    <text x="360" y="445" class="label">• Contract compilation</text>
+    <text x="360" y="465" class="label">• Wasm bytecode upload</text>
+    <text x="360" y="485" class="label">• Wallet funding (faucet)</text>
+    <text x="360" y="505" class="label">• Event monitoring</text>
+    <text x="360" y="525" class="label">• Live debugging</text>
+  </g>
+
+  <g>
+    <!-- Integrated Dev -->
+    <rect x="680" y="400" width="240" height="150" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5" rx="5"/>
+    <text x="800" y="420" class="label" text-anchor="middle" font-weight="bold" fill="#059669">Integrated Dev Loop</text>
+    <text x="690" y="445" class="label" fill="#059669">✓ File watching</text>
+    <text x="690" y="465" class="label" fill="#059669">✓ Auto-rebuild</text>
+    <text x="690" y="485" class="label" fill="#059669">✓ Live block monitor</text>
+    <text x="690" y="505" class="label" fill="#059669">✓ Event streaming</text>
+    <text x="690" y="525" class="label" fill="#059669">✓ Chain interaction</text>
+  </g>
+
+  <!-- Flow description -->
+  <text x="500" y="570" class="label" text-anchor="middle">Complete developer workflow in one unified CLI platform</text>
+</svg>
