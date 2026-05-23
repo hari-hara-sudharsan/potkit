@@ -1,0 +1,23 @@
+[package]
+name = "potkit"
+version = "0.1.0"
+edition = "2021"
+authors = ["Hari and ChatGPT"]
+description = "All-in-one Portaldot developer CLI"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+anyhow = "1.0"
+thiserror = "2"
+colored = "2.1"
+indicatif = "0.17"
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
+dirs = "6"
+notify = "6"
+
+# Correct subxt configuration for v0.41
+subxt = { version = "0.41", default-features = false, features = ["jsonrpsee", "native", "runtime"] }
+subxt-signer = { version = "0.41.0" }
+subxt-macro = { version = "0.41.0", features = ["runtime-metadata-insecure-url"] }
