@@ -16,6 +16,14 @@ serde = { version = "1", features = ["derive"] }
 toml = "0.8"
 dirs = "6"
 notify = "6"
+chrono = "0.4"
+serde_json = "1"
+
+# Scale Codec Support
+parity-scale-codec = { version = "3", features = ["derive"] }
+
+# Hex encoding for contract addresses
+hex = "0.4"
 
 # Correct subxt configuration for v0.41
 subxt = { version = "0.41", default-features = false, features = ["jsonrpsee", "native", "runtime"] }
