@@ -315,6 +315,30 @@ potkit status
 
 🌱 **Clear Roadmap** — Commitment beyond the hackathon, with a path to full ABI tooling, hot reload, and multi-network deployment.
 
+**Quick Setup**
+
+```bash
+git clone https://github.com/hari-hara-sudharsan/potkit
+
+cd potkit
+
+cargo install --path .
+
+potkit node
+
+potkit status
+
+cd real-contract
+
+potkit build
+
+potkit upload
+
+potkit abi-inspect
+
+potkit logs --follow
+```
+
 ### For the Portaldot Ecosystem
 
 - **Accelerates onboarding** — New devs productive in 30 minutes, not 3 days
