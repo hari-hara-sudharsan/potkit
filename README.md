@@ -52,7 +52,7 @@ That's it. PotKit is your **single entry point** for the entire Portaldot develo
 
 ```bash
 # Clone & install
-git clone <repo-url> && cd potkit-starter
+git clone https://github.com/hari-hara-sudharsan/potkit && cd potkit-starter
 cargo install --path .
 
 # Verify your environment
