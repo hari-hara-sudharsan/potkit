@@ -24,8 +24,16 @@ pub enum Commands {
     Dev,
     Build,
     Upload,
+    Instantiate,
     Deploy,
     Inspect(AddressArgs),
+    AbiInspect,
+    Query {
+        message: String,
+    },
+    Call {
+        message: String,
+    },
     Doctor,
     #[command(subcommand)]
     Config(ConfigCommand),
@@ -65,4 +73,3 @@ pub struct ConfigArgs {
     #[command(subcommand)]
     pub command: ConfigCommand,
 }
-
