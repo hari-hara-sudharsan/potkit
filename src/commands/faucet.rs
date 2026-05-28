@@ -1,3 +1,4 @@
+use crate::utils::output::tx_event;
 use anyhow::{Context, Result};
 use colored::*;
 use dirs::home_dir;
@@ -72,6 +73,7 @@ pub async fn run(args: FaucetArgs) -> Result<()> {
 
     let tx_in_block = tx_progress.wait_for_finalized().await?;
 
+    tx_event("Faucet transfer finalized");
     println!();
     println!("{}", "✅ Transaction Successful!".bold().green());
     println!(
