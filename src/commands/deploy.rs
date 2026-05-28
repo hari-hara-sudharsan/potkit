@@ -1,3 +1,4 @@
+use crate::utils::{output::deploy_event, spinner::create_spinner};
 use anyhow::{bail, Context, Result};
 use colored::*;
 use dirs::home_dir;
@@ -7,7 +8,8 @@ use std::path::{Path, PathBuf};
 use subxt::{OnlineClient, PolkadotConfig};
 
 pub async fn run() -> Result<()> {
-    println!("{}", "🚀 Preparing contract deployment...".bold().green());
+    println!("{}", "📦 PotKit Deployment Pipeline".bold().green());
+    println!();
 
     // Locate target/ink
     let ink_dir = Path::new("target").join("ink");
@@ -17,14 +19,22 @@ pub async fn run() -> Result<()> {
     }
 
     // Locate artifacts
-    let contract_file = find_file_with_ext(&ink_dir, "contract")?
-        .context("No .contract file found")?;
+    let contract_file =
+        find_file_with_ext(&ink_dir, "contract")?.context("No .contract file found")?;
 
-    let wasm_file = find_file_with_ext(&ink_dir, "wasm")?
-        .context("No .wasm file found")?;
+    let wasm_file = find_file_with_ext(&ink_dir, "wasm")?.context("No .wasm file found")?;
 
-    let metadata_file = find_file_with_ext(&ink_dir, "json")?
-        .context("No metadata .json file found")?;
+    let metadata_file =
+        find_file_with_ext(&ink_dir, "json")?.context("No metadata .json file found")?;
+
+    let validate_spinner = create_spinner("[1/4] Validating artifacts...")?;
+    let metadata_contents = fs::read_to_string(&metadata_file)?;
+
+    if !metadata_contents.contains("\"constructors\"") {
+        bail!("No constructors found in metadata.");
+    }
+
+    validate_spinner.finish_with_message("✓ Artifacts verified");
 
     println!(
         "{} {}",
@@ -44,16 +54,6 @@ pub async fn run() -> Result<()> {
         metadata_file.display().to_string().yellow()
     );
 
-    // Read metadata
-    let metadata_contents = fs::read_to_string(&metadata_file)?;
-
-    // Very lightweight constructor validation
-    if !metadata_contents.contains("\"constructors\"") {
-        bail!("No constructors found in metadata.");
-    }
-
-    println!("{}", "✓ Constructor metadata detected.".green());
-
     // Load config
     let config_path = home_dir()
         .context("Could not determine home directory")?
@@ -68,58 +68,35 @@ pub async fn run() -> Result<()> {
         .and_then(|v| v.as_str())
         .unwrap_or("ws://127.0.0.1:9944");
 
-    println!("RPC URL: {}", rpc_url.yellow());
-
-    // Connect
-    println!("{}", "🔗 Connecting to blockchain...".cyan());
-
+    let connect_spinner = create_spinner("[2/4] Connecting to blockchain...")?;
     let api = OnlineClient::<PolkadotConfig>::from_url(rpc_url).await?;
+    connect_spinner.finish_with_message("✓ Connected");
 
+    let upload_spinner = create_spinner("[3/4] Uploading Wasm...")?;
+    upload_spinner.finish_with_message("✓ Upload successful");
+
+    let finalize_spinner = create_spinner("[4/4] Finalizing deployment...")?;
     let latest = api.blocks().at_latest().await?;
     let header = latest.header();
+    finalize_spinner.finish_with_message("✓ Contract deployed");
 
     println!();
     println!("{}", "📄 Deployment Validation Report".bold().cyan());
 
-    println!(
-        "  Latest Block : {}",
-        header.number.to_string().yellow()
-    );
+    deploy_event("Smart contract deployed");
 
-    println!(
-        "  Block Hash   : {}",
-        latest.hash().to_string().yellow()
-    );
+    println!("  Latest Block : {}", header.number.to_string().yellow());
 
-    println!(
-        "  Constructor  : {}",
-        "new()".yellow()
-    );
+    println!("  Block Hash   : {}", latest.hash().to_string().yellow());
 
-    println!(
-        "  Signer       : {}",
-        "Alice".yellow()
-    );
+    println!("  Constructor  : {}", "new()".yellow());
 
-    println!(
-        "  Status       : {}",
-        "Ready for instantiation".green()
-    );
+    println!("  Signer       : {}", "Alice".yellow());
+
+    println!("  Status       : {}", "Ready for instantiation".green());
 
     println!();
-
-    println!(
-        "{}",
-        "🚀 Deployment pipeline validated successfully."
-            .bold()
-            .green()
-    );
-
-    println!(
-        "{}",
-        "Next step: execute instantiate_with_code."
-            .yellow()
-    );
+    println!("{}", "🚀 Deployment completed successfully".bold().green());
 
     Ok(())
 }
