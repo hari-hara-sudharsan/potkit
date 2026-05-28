@@ -2,6 +2,7 @@ mod cli;
 mod commands;
 mod config;
 mod error;
+mod utils;
 
 use anyhow::Result;
 use clap::Parser;
@@ -20,8 +21,16 @@ async fn main() -> Result<()> {
         Commands::Dev => commands::dev::run().await?,
         Commands::Build => commands::build::run().await?,
         Commands::Upload => commands::upload::run().await?,
+        Commands::Instantiate => commands::instantiate::run().await?,
         Commands::Deploy => commands::deploy::run().await?,
         Commands::Inspect(args) => commands::inspect::run(args).await?,
+        Commands::AbiInspect => commands::abi_inspect::run().await?,
+        Commands::Query { message } => {
+            commands::query::run(message).await?
+        }
+        Commands::Call { message } => {
+            commands::call::run(message).await?
+        }
         Commands::Doctor => commands::doctor::run().await?,
         Commands::Config(config_cmd) => match config_cmd {
             ConfigCommand::Init => commands::config::init().await?,
