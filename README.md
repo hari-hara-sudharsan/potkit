@@ -41,7 +41,7 @@ Building on Substrate is powerful — but painfully fragmented. A developer must
 ## Solution: One CLI. Full Stack.
 
 ```
-potkit <command>
+potkit dev
 ```
 
 That's it. PotKit is your **single entry point** for the entire Portaldot development lifecycle — from first setup to live production monitoring.
