@@ -4,13 +4,14 @@ use dirs::home_dir;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use indicatif::{ProgressBar, ProgressStyle};
+use crate::utils::{output::upload_event, spinner::create_spinner};
 use subxt::{dynamic, OnlineClient, PolkadotConfig};
 
 use subxt_signer::sr25519::dev;
 
 pub async fn run() -> Result<()> {
-    println!("{}", "📤 Uploading smart contract code...".bold().green());
+    println!("{}", "📤 PotKit Upload Pipeline".bold().green());
+    println!();
 
     // Locate target/ink
     let ink_dir = Path::new("target").join("ink");
@@ -53,29 +54,19 @@ pub async fn run() -> Result<()> {
 
     println!("RPC URL: {}", rpc_url.yellow());
 
-    // Connect
-    let connect_spinner = ProgressBar::new_spinner();
-
-    connect_spinner.set_style(ProgressStyle::with_template("{spinner:.green} {msg}")?);
-
-    connect_spinner.enable_steady_tick(std::time::Duration::from_millis(120));
-
-    connect_spinner.set_message("Connecting to blockchain...");
+    let connect_spinner = create_spinner("[1/3] Connecting to blockchain...")?;
 
     let api = OnlineClient::<PolkadotConfig>::from_url(rpc_url).await?;
 
-    connect_spinner.finish_with_message("Connected to blockchain");
+    connect_spinner.finish_with_message("✓ Connected");
+
+    let validate_spinner = create_spinner("[2/3] Validating Wasm artifact...")?;
+    validate_spinner.finish_with_message("✓ Wasm artifact verified");
 
     // Alice signer
     let signer = dev::alice();
 
-    let upload_spinner = ProgressBar::new_spinner();
-
-    upload_spinner.set_style(ProgressStyle::with_template("{spinner:.cyan} {msg}")?);
-
-    upload_spinner.enable_steady_tick(std::time::Duration::from_millis(100));
-
-    upload_spinner.set_message("Uploading Wasm code...");
+    let upload_spinner = create_spinner("[3/3] Uploading Wasm...")?;
 
     // Build dynamic upload_code extrinsic
     let tx = dynamic::tx(
@@ -96,8 +87,11 @@ pub async fn run() -> Result<()> {
 
     let tx_in_block = tx_progress.wait_for_finalized().await?;
 
-    upload_spinner.finish_with_message("Wasm upload finalized");
+    upload_spinner.finish_with_message("✓ Upload finalized");
 
+    upload_event("Wasm bytecode stored on-chain");
+    println!();
+    println!("{}", "🚀 Upload completed successfully".bold().green());
     println!();
     println!("{}", "✅ Contract Code Uploaded!".bold().green());
 

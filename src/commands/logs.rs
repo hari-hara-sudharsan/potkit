@@ -1,3 +1,4 @@
+use crate::utils::output::print_chain_event;
 use anyhow::{Context, Result};
 use colored::*;
 use dirs::home_dir;
@@ -36,7 +37,7 @@ pub async fn run(follow: bool) -> Result<()> {
         let header = latest.header();
 
         println!();
-        println!("[latest] Block #{}", header.number.to_string().cyan());
+        print_chain_event(&format!("New Block #{}", header.number));
 
         return Ok(());
     }
@@ -54,7 +55,7 @@ pub async fn run(follow: bool) -> Result<()> {
         let current = header.number as u64;
 
         if current != last_seen {
-            println!("[block] #{}", current.to_string().green());
+            print_chain_event(&format!("New Block #{}", current));
 
             last_seen = current;
         }
