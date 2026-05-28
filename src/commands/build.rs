@@ -1,11 +1,13 @@
+use crate::utils::spinner::create_spinner;
 use anyhow::{bail, Result};
 use colored::*;
+use std::path::Path;
 use std::process::{Command, Stdio};
 
 pub async fn run() -> Result<()> {
-    println!("{}", "🛠️ Building smart contract...".bold().green());
+    println!("{}", "🛠️ PotKit Contract Build".bold().green());
 
-    // Check whether cargo-contract is installed
+    let detect_spinner = create_spinner("[1/3] Detecting cargo-contract...")?;
     let check = Command::new("cargo")
         .args(["contract", "--version"])
         .output();
@@ -13,7 +15,8 @@ pub async fn run() -> Result<()> {
     match check {
         Ok(output) if output.status.success() => {
             let version = String::from_utf8_lossy(&output.stdout);
-            println!("{} {}", "✓ cargo-contract detected:".green(), version.trim());
+            detect_spinner.finish_with_message("✓ cargo-contract available");
+            println!("{} {}", "Version:".green(), version.trim().yellow());
         }
         _ => {
             bail!(
@@ -24,10 +27,7 @@ pub async fn run() -> Result<()> {
         }
     }
 
-    println!("{}", "⏳ Running `cargo contract build`...".cyan());
-    println!();
-
-    // Execute cargo contract build and stream output directly
+    let build_spinner = create_spinner("[2/3] Building ink! contract...")?;
     let status = Command::new("cargo")
         .args(["contract", "build"])
         .stdin(Stdio::inherit())
@@ -39,9 +39,19 @@ pub async fn run() -> Result<()> {
         bail!("Smart contract build failed.");
     }
 
+    build_spinner.finish_with_message("✓ Contract compiled");
+
+    let validate_spinner = create_spinner("[3/3] Validating artifacts...")?;
+    let ink_dir = Path::new("target").join("ink");
+
+    if ink_dir.exists() {
+        validate_spinner.finish_with_message("✓ Wasm artifact ready");
+    } else {
+        bail!("Expected artifacts were not generated in target/ink");
+    }
+
     println!();
-    println!("{}", "✓ Contract built successfully.".bold().green());
-    println!("{}", "📦 Check the `target/ink/` directory for artifacts.".yellow());
+    println!("{}", "🚀 Build completed successfully".bold().green());
 
     Ok(())
 }
