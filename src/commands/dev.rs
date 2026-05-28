@@ -1,9 +1,11 @@
-use anyhow::{bail, Context, Result};
+use crate::utils::output::{build_event, chain_event, watch_event};
+use anyhow::{anyhow, bail, Context, Result};
 use colored::*;
 use dirs::home_dir;
-use notify::{recommended_watcher, RecursiveMode, Watcher};
+use notify::{RecursiveMode, Watcher};
+use std::env;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::sync::mpsc::channel;
 use tokio::time::{sleep, Duration};
 
@@ -55,19 +57,30 @@ pub async fn run() -> Result<()> {
     // File Watcher
     // ---------------------------------------------------
 
-    let watch_path: PathBuf = if Path::new("src").exists() {
-        PathBuf::from("src")
-    } else if Path::new("Cargo.toml").exists() || Path::new("lib.rs").exists() {
-        PathBuf::from(".")
-    } else {
+    let mut watch_path = env::current_dir()?.join("src");
+
+    // If src doesn't exist in current dir, check parent
+    if !watch_path.exists() {
+        watch_path = env::current_dir()?
+            .parent()
+            .ok_or_else(|| anyhow!("Could not find parent directory"))?
+            .join("src");
+    }
+
+    // Final check - make sure the path exists
+    if !watch_path.exists() {
         bail!(
-            "No source directory found to watch. Run `potkit dev` from a project root or create a src/ directory."
+            "Could not find 'src' directory. Current dir: {}\nTried: {}",
+            env::current_dir()?.display(),
+            watch_path.display()
         );
-    };
+    }
 
     let (tx, rx) = channel();
 
-    let mut watcher = recommended_watcher(tx)?;
+    let mut watcher = notify::recommended_watcher(move |res| {
+        tx.send(res).unwrap();
+    })?;
 
     watcher.watch(&watch_path, RecursiveMode::Recursive)?;
 
@@ -100,11 +113,7 @@ pub async fn run() -> Result<()> {
             let current = header.number as u64;
 
             if current != last_block {
-                println!(
-                    "{} {}",
-                    "[chain]".bright_blue(),
-                    format!("Block #{}", current).green()
-                );
+                chain_event(&format!("New Block #{}", current));
 
                 last_block = current;
             }
@@ -115,10 +124,15 @@ pub async fn run() -> Result<()> {
         // ---------------------------------------------------
 
         match rx.try_recv() {
-            Ok(event) => {
-                println!("{} {:?}", "[watch]".bright_yellow(), event);
+            Ok(Ok(event)) => {
+                watch_event("Contract source modified");
+                println!("{} {:?}", "[watch]".bright_yellow(), event.paths);
 
-                println!("{}", "[build] Rebuild recommended".bright_green());
+                build_event("Rebuild recommended");
+            }
+
+            Ok(Err(e)) => {
+                println!("{} {:?}", "[watch-error]".red(), e);
             }
 
             Err(_) => {}
